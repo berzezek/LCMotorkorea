@@ -1,0 +1,36 @@
+{% extends 'oscar/catalogue/partials/product.html' %}
+{% load display_tags %}
+{% load i18n %}
+{% load image_tags %}
+{% load reviews_tags %}
+{% load purchase_info_tags %}
+{% load currency_filters %}
+
+{% block product %}
+<div class="card">
+    {% block product_image %}
+    <div class="image_container w-100">
+        {% with image=product.primary_image %}
+        {% oscar_thumbnail image.original "x155" upscale=False as thumb %}
+        <a href="{{ product.get_absolute_url }}">
+            <img src="{{ thumb.url }}" alt="{{ product.get_title }}" class="img-thumbnail w-auto">
+        </a>
+        {% endwith %}
+    </div>
+    {% endblock %}
+    <h1 class="card_title">{{ product.get_title|truncatewords:4 }}</h1>
+    <div class="product_price w-100">
+        {% purchase_info_for_product request product as session %}
+        {% if session.price.exists %}
+        <p class="price">{{ session.price.incl_tax|currency:session.price.currency }}</p>
+        {% else %}
+        <p class="price">&nbsp;</p>
+        {% endif %}
+    </div>
+    <a href="{{ product.get_absolute_url }}" title="{{ product.get_title }}">
+        <p>
+            <button>Details</button>
+        </p>
+    </a>
+</div>
+{% endblock %}
